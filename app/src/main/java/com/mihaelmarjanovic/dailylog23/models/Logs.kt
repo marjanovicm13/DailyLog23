@@ -5,18 +5,17 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
 
+
 @Entity(tableName = "logs")
-class Logs: Serializable {
+data class Logs(
     @PrimaryKey(autoGenerate = true)
-    val id = 0
-
+    val id: Int?,
     @ColumnInfo(name = "title")
-    val title = ""
-
+    val title: String,
     @ColumnInfo(name = "log")
-    val log = ""
-
+    val log: String,
     @ColumnInfo(name = "date")
-    val date = ""
-
-}
+    val date: String,
+    @ColumnInfo(name = "time")
+    val timeOfLog: String
+): Serializable

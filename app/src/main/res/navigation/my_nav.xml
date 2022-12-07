@@ -9,7 +9,11 @@
         android:id="@+id/dayFragment"
         android:name="com.mihaelmarjanovic.dailylog23.fragments.DayFragment"
         android:label="Day"
-        tools:layout="@layout/fragment_day" />
+        tools:layout="@layout/fragment_day" >
+        <action
+            android:id="@+id/action_dayFragment_to_addLog"
+            app:destination="@id/addLog" />
+    </fragment>
     <fragment
         android:id="@+id/goalsFragment"
         android:name="com.mihaelmarjanovic.dailylog23.fragments.GoalsFragment"
@@ -25,4 +29,9 @@
         android:name="com.mihaelmarjanovic.dailylog23.fragments.SettingsFragment"
         android:label="Settings"
         tools:layout="@layout/fragment_settings" />
+    <activity
+        android:id="@+id/addLog"
+        android:name="com.mihaelmarjanovic.dailylog23.AddLog"
+        android:label="activity_add_log"
+        tools:layout="@layout/activity_add_log" />
 </navigation>

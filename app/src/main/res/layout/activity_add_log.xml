@@ -61,7 +61,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="26dp"
         android:ems="10"
-        android:inputType="textPersonName"
+        android:inputType="textMultiLine"
         android:hint="Anything to log?"
         android:gravity="top"
         android:lineSpacingMultiplier="1.8"
