@@ -3,6 +3,7 @@ package com.mihaelmarjanovic.dailylog23.fragments
 import android.app.Activity
 import android.app.Application
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -13,6 +14,8 @@ import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -68,7 +71,9 @@ class DayFragment : Fragment(), LogsAdapter.LogsClickListener, PopupMenu.OnMenuI
         }
 
         database = LogsDatabase.getDatabase(Application())
+
         setUI()
+
         return binding.root
     }
 
@@ -128,6 +133,7 @@ class DayFragment : Fragment(), LogsAdapter.LogsClickListener, PopupMenu.OnMenuI
         intent.putExtra("current_log", logs)
         intent.putExtra("date", logs.date)
         intent.putExtra("time", logs.timeOfLog)
+        intent.putExtra("image", logs.image)
         updateLog.launch(intent)
     }
 

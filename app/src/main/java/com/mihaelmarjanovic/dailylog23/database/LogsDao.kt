@@ -16,7 +16,7 @@ interface LogsDao {
     @Query("SELECT * FROM logs WHERE date = :date ORDER BY id ASC")
     suspend fun getAllNotes(date: String): List<Logs>
 
-    @Query("UPDATE logs Set title = :title, log = :log WHERE id = :id")
-    suspend fun update(id: Int?, title: String?, log: String?)
+    @Query("UPDATE logs Set title = :title, log = :log, image = :image WHERE id = :id")
+    suspend fun update(id: Int?, title: String?, log: String?, image: String?)
 
 }

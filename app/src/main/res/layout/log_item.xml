@@ -40,6 +40,15 @@
             android:textSize="14sp"
             ></TextView>
 
+        <ImageView
+            android:id="@+id/ivListLogImage"
+            android:tooltipText="image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentStart="true"
+            android:contentDescription="logImage"
+            ></ImageView>
+
         <TextView
             android:id="@+id/tvTime"
             android:layout_width="match_parent"

@@ -1,5 +1,8 @@
 package com.mihaelmarjanovic.dailylog23.models
 
+import android.media.Image
+import android.net.Uri
+import androidx.annotation.Nullable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -17,5 +20,8 @@ data class Logs(
     @ColumnInfo(name = "date")
     val date: String,
     @ColumnInfo(name = "time")
-    val timeOfLog: String
+    val timeOfLog: String,
+    @Nullable
+    @ColumnInfo(name = "image")
+    val image: String
 ): Serializable

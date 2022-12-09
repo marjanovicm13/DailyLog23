@@ -61,13 +61,36 @@
         android:layout_height="0dp"
         android:layout_marginTop="26dp"
         android:ems="10"
-        android:inputType="textMultiLine"
-        android:hint="Anything to log?"
         android:gravity="top"
+        android:hint="Anything to log?"
+        android:inputType="textMultiLine"
         android:lineSpacingMultiplier="1.8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/etTitle"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/etTitle"
-        app:layout_constraintTop_toBottomOf="@+id/etTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/etTitle"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/ivLogImage"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:layout_constraintBottom_toBottomOf="@+id/etLog"
+        app:layout_constraintEnd_toEndOf="@+id/etLog"
+        app:layout_constraintStart_toStartOf="@+id/etLog"
+        app:layout_constraintTop_toTopOf="@+id/etLog"
+        ></ImageView>
+
+    <ImageButton
+        android:id="@+id/btnAddImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_add_24"
+        android:tooltipText="Add image from gallery"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivLogImage"></ImageButton>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

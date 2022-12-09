@@ -18,7 +18,7 @@ class LogsRepository(private val logsDao: LogsDao) {
     }
 
     suspend fun update(logs: Logs){
-        logsDao.update(logs.id, logs.title, logs.log)
+        logsDao.update(logs.id, logs.title, logs.log, logs.image)
     }
 
 }

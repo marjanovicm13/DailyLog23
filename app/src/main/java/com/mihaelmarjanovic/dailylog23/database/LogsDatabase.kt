@@ -9,7 +9,7 @@ import com.mihaelmarjanovic.dailylog23.fragments.DayFragment
 import com.mihaelmarjanovic.dailylog23.models.Logs
 import com.mihaelmarjanovic.dailylog23.utilities.DATABASE_NAME
 
-@Database(entities = arrayOf(Logs::class), version = 2,exportSchema = false)
+@Database(entities = arrayOf(Logs::class), version = 9,exportSchema = false)
 abstract class LogsDatabase: RoomDatabase() {
 
     abstract fun getLogsDao(): LogsDao
@@ -27,7 +27,7 @@ abstract class LogsDatabase: RoomDatabase() {
                     context.applicationContext,
                     LogsDatabase::class.java,
                     DATABASE_NAME
-                ).build()
+                ).fallbackToDestructiveMigration().build()
 
                 INSTANCE = instance
                 instance
