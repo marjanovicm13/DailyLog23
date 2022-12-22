@@ -2,34 +2,24 @@ package com.mihaelmarjanovic.dailylog23
 
 import android.app.Activity
 import android.content.Intent
-import android.content.UriPermission
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
-import android.icu.text.SimpleDateFormat
-import android.media.Image
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.View
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.mihaelmarjanovic.dailylog23.databinding.ActivityAddLogBinding
 import com.mihaelmarjanovic.dailylog23.models.Logs
 import kotlinx.android.synthetic.main.activity_add_log.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import java.lang.Exception
-import java.util.*
 
 class AddLog : AppCompatActivity() {
 
     var pickedPhoto: Uri? = null
     var pickedBitMap: Bitmap? = null
+    var image: String = ""
 
     private lateinit var binding: ActivityAddLogBinding
     private lateinit var log: Logs
@@ -46,7 +36,14 @@ class AddLog : AppCompatActivity() {
             oldLog = intent.getSerializableExtra("current_log") as Logs
             binding.etTitle.setText(oldLog.title)
             binding.etLog.setText(oldLog.log)
-            binding.ivLogImage.setImageBitmap(MediaStore.Images.Media.getBitmap(this.contentResolver,Uri.parse(oldLog.image)))
+            if(oldLog.image.toString().isNotEmpty() || oldLog.image.toString() != "") {
+                binding.ivLogImage.setImageBitmap(
+                    MediaStore.Images.Media.getBitmap(
+                        this.contentResolver,
+                        Uri.parse(oldLog.image)
+                    )
+                )
+            }
             isUpdate = true
         }catch (e: Exception){
             e.printStackTrace()
@@ -57,8 +54,13 @@ class AddLog : AppCompatActivity() {
             val logContent = binding.etLog.text.toString()
             val logDate = intent.getSerializableExtra("date")
             val logTime = intent.getSerializableExtra("time")
-            val image = pickedPhoto
 
+            if(isUpdate == true){
+                image = intent.getSerializableExtra("image").toString()
+            }
+            if(pickedPhoto != null) {
+                image = pickedPhoto.toString()
+            }
             val intent = Intent()
 
             if(title.isNotEmpty() || logContent.isNotEmpty()){
@@ -70,7 +72,7 @@ class AddLog : AppCompatActivity() {
                         logContent,
                         logDate as String,
                         logTime as String,
-                        image.toString()
+                        image
                     )
                 }
                 else{
@@ -80,10 +82,10 @@ class AddLog : AppCompatActivity() {
                         logContent,
                         logDate as String,
                         logTime as String,
-                        pickedPhoto.toString()
+                        image
                     )
                 }
-                println("new image is " + log.image)
+                //println("new image is " + log.image)
                 intent.putExtra("log", log)
                 setResult(Activity.RESULT_OK, intent)
                 finish()
@@ -107,7 +109,7 @@ class AddLog : AppCompatActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(
+/*    override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray
@@ -117,14 +119,15 @@ class AddLog : AppCompatActivity() {
             startActivityForResult(galleryIntent, 2)
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
+    }*/
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == 1 && resultCode == RESULT_OK && data != null){
             pickedPhoto = data.data
-            println(pickedPhoto.toString())
-            println(pickedPhoto)
+            //println(pickedPhoto.toString())
+            //println(pickedPhoto)
+            contentResolver.takePersistableUriPermission(pickedPhoto!!, Intent.FLAG_GRANT_READ_URI_PERMISSION)
             if(Build.VERSION.SDK_INT >= 28){
                 val source = ImageDecoder.createSource(this.contentResolver, pickedPhoto!!)
                 pickedBitMap = ImageDecoder.decodeBitmap(source)

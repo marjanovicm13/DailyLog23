@@ -5,7 +5,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.mihaelmarjanovic.dailylog23.database.LogsDao
+import com.mihaelmarjanovic.dailylog23.database.GoalsDao
+import com.mihaelmarjanovic.dailylog23.database.GoalsRepository
 import com.mihaelmarjanovic.dailylog23.database.LogsDatabase
 import com.mihaelmarjanovic.dailylog23.database.LogsRepository
 import kotlinx.coroutines.Dispatchers
@@ -13,25 +14,21 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-class LogsViewModel(application: Application): AndroidViewModel(application) {
-
-    private val repository: LogsRepository
-    private var dao: LogsDao
+class GoalsViewModel(application: Application): AndroidViewModel(application)  {
+    private val goalsRepository: GoalsRepository
+    private var dao: GoalsDao
     private var calendar = Calendar.getInstance()
     var currentDate: String
-    var currentTime: String
     val formatter = SimpleDateFormat("dd-MM-yyyy")
-    val timeFormatter = SimpleDateFormat("HH:mm:ss")
 
-    private val _logs = MutableLiveData<List<Logs>>()
-    val logs: LiveData<List<Logs>>
-        get() = _logs
+    private val _goals = MutableLiveData<List<Goals>>()
+    val goals: LiveData<List<Goals>>
+        get() = _goals
 
     init {
-        dao = LogsDatabase.getDatabase(application).getLogsDao()
-        repository = LogsRepository(dao)
+        dao = LogsDatabase.getDatabase(application).getGoalsDao()
+        goalsRepository = GoalsRepository(dao)
         currentDate = formatter.format(Calendar.getInstance().time)
-        currentTime = timeFormatter.format(Calendar.getInstance().time)
     }
 
     fun nextDate(){
@@ -46,20 +43,19 @@ class LogsViewModel(application: Application): AndroidViewModel(application) {
 
     fun initializeLogs(date: String){
         viewModelScope.launch {
-            _logs.value = repository.getAllLogs(date)
+            _goals.value = goalsRepository.getAllGoals(date)
         }
     }
 
-    fun deleteLog(logs: Logs) = viewModelScope.launch(Dispatchers.IO) {
-        repository.delete(logs)
+    fun updateCheckedGoal(isChecked: Boolean, id: Int) = viewModelScope.launch(Dispatchers.IO) {
+        goalsRepository.updateCheckedGoal(isChecked, id)
     }
 
-    fun insertLog(logs: Logs) = viewModelScope.launch(Dispatchers.IO) {
-        repository.insert(logs)
+    fun deleteGoal(goals: Goals) = viewModelScope.launch(Dispatchers.IO) {
+        goalsRepository.delete(goals)
     }
 
-    fun updateLogs(logs: Logs) = viewModelScope.launch(Dispatchers.IO) {
-        repository.update(logs)
+    fun insertGoal(goals: Goals) = viewModelScope.launch(Dispatchers.IO) {
+        goalsRepository.insert(goals)
     }
-
 }

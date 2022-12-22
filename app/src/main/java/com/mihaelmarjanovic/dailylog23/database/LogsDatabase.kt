@@ -6,13 +6,15 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.mihaelmarjanovic.dailylog23.fragments.DayFragment
+import com.mihaelmarjanovic.dailylog23.models.Goals
 import com.mihaelmarjanovic.dailylog23.models.Logs
 import com.mihaelmarjanovic.dailylog23.utilities.DATABASE_NAME
 
-@Database(entities = arrayOf(Logs::class), version = 9,exportSchema = false)
+@Database(entities = arrayOf(Logs::class, Goals::class), version = 13,exportSchema = false)
 abstract class LogsDatabase: RoomDatabase() {
 
     abstract fun getLogsDao(): LogsDao
+    abstract fun getGoalsDao(): GoalsDao
 
     companion object{
 

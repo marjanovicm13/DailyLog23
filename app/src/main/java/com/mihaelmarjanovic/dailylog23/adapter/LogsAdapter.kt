@@ -1,6 +1,7 @@
 package com.mihaelmarjanovic.dailylog23.adapter
 
 import android.content.Context
+import android.content.UriPermission
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.net.Uri
@@ -32,15 +33,28 @@ class LogsAdapter(private val context: Context, val listener: LogsClickListener)
     }
 
     override fun onBindViewHolder(holder: LogsViewHolder, position: Int) {
+        val width: Float = context.resources.getDimension(R.dimen.width)
+        val height = context.resources.getDimension(R.dimen.height)
+
         val currentLog = LogsList[position]
-        println("In adapter "+currentLog.image)
         holder.title.text = currentLog.title
-        //ŠTA IS SELECTED ZNAČI???
-        //holder.title.isSelected = true
         holder.log.text = currentLog.log
         holder.time.text = currentLog.timeOfLog
-        //holder.time.isSelected = true
-        holder.image.setImageBitmap(MediaStore.Images.Media.getBitmap(context.contentResolver,Uri.parse(currentLog.image)))
+
+        if(currentLog.image.toString().isNotEmpty() || currentLog.image.toString() != "") {
+            holder.image.setLayoutParams(LinearLayout.LayoutParams(width.toInt(), height.toInt()));
+            holder.image.setAdjustViewBounds(true);
+            holder.image.setImageBitmap(
+                MediaStore.Images.Media.getBitmap(
+                    context.contentResolver,
+                    Uri.parse(currentLog.image)
+                )
+            )
+        }
+        else{
+            holder.image.setImageDrawable(null);
+            holder.image.setLayoutParams(LinearLayout.LayoutParams(0, 0));
+        }
 
         holder.logs_layout.setOnClickListener{
             listener.onItemClicked(LogsList[holder.adapterPosition])
@@ -50,14 +64,11 @@ class LogsAdapter(private val context: Context, val listener: LogsClickListener)
             true
         }
 
-        val width: Float = context.resources.getDimension(R.dimen.width)
-        val height = context.resources.getDimension(R.dimen.height)
-
         holder.image.setOnClickListener{
                 if(isImageFitToScreen) {
                     isImageFitToScreen=false;
                     holder.image.setLayoutParams(LinearLayout.LayoutParams(width.toInt(), height.toInt()));
-                    //holder.image.setAdjustViewBounds(true);
+                    holder.image.setAdjustViewBounds(true);
                 }else{
                     isImageFitToScreen=true;
                     holder.image.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));

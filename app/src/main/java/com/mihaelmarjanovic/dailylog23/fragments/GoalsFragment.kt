@@ -1,60 +1,147 @@
 package com.mihaelmarjanovic.dailylog23.fragments
 
+import android.app.Activity
+import android.app.Application
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.cardview.widget.CardView
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.mihaelmarjanovic.dailylog23.AddGoal
 import com.mihaelmarjanovic.dailylog23.R
+import com.mihaelmarjanovic.dailylog23.adapter.GoalsAdapter
+import com.mihaelmarjanovic.dailylog23.database.LogsDatabase
+import com.mihaelmarjanovic.dailylog23.databinding.FragmentGoalsBinding
+import com.mihaelmarjanovic.dailylog23.models.Goals
+import com.mihaelmarjanovic.dailylog23.models.GoalsViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [GoalsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class GoalsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class GoalsFragment : Fragment(), GoalsAdapter.GoalsClickListener, PopupMenu.OnMenuItemClickListener {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var binding: FragmentGoalsBinding
+    private lateinit var database: LogsDatabase
+    lateinit var viewModel : GoalsViewModel
+    lateinit var adapter: GoalsAdapter
+    lateinit var selectedGoal: Goals
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_goals, container, false)
+        binding = FragmentGoalsBinding.inflate(layoutInflater)
+
+        viewModel = ViewModelProvider(this,
+            ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)).get(
+            GoalsViewModel::class.java)
+
+        viewModel.goals.observe(viewLifecycleOwner){
+            adapter.updateList(it)
+        }
+
+        database = LogsDatabase.getDatabase(Application())
+
+        setUI()
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment GoalsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            GoalsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun setUI(){
+        binding.recyclerViewGoals.setHasFixedSize(true)
+        binding.recyclerViewGoals.layoutManager = LinearLayoutManager(requireContext())
+        adapter = GoalsAdapter(requireContext(), this)
+        binding.recyclerViewGoals.adapter = adapter
+
+        val getContent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+                result ->
+            if(result.resultCode == Activity.RESULT_OK){
+                val goal = result.data?.getSerializableExtra("goal") as? Goals
+                if(goal != null){
+                    runBlocking {
+                        viewModel.insertGoal(goal)
+                        delay(50)
+                        viewModel.initializeLogs(viewModel.currentDate)
+                    }
                 }
             }
+        }
+
+        val currentDate = binding.tvCurrentDateGoals
+        currentDate.text = viewModel.currentDate
+
+        viewModel.initializeLogs(viewModel.currentDate)
+        currentDate.text = viewModel.currentDate
+
+        //Previous date
+        binding.btnPrevGoals.setOnClickListener{
+            viewModel.prevDate()
+            currentDate.text =  viewModel.currentDate
+            viewModel.initializeLogs(viewModel.currentDate)
+        }
+        //Next date
+        binding.btnNextGoals.setOnClickListener{
+            viewModel.nextDate()
+            currentDate.text =  viewModel.currentDate
+            viewModel.initializeLogs(viewModel.currentDate)
+        }
+
+        //Binding add goal button
+        binding.fbAddGoal.setOnClickListener{
+            val intent = Intent(context, AddGoal::class.java)
+            intent.putExtra("date",  viewModel.currentDate)
+            getContent.launch(intent)
+        }
+
     }
+
+    override fun onItemClicked(goals: Goals) {
+     /*   val intent = Intent(context, AddLog::class.java)
+        intent.putExtra("current_log", logs)
+        intent.putExtra("date", logs.date)
+        intent.putExtra("time", logs.timeOfLog)
+        intent.putExtra("image", logs.image)
+        updateLog.launch(intent)*/
+    }
+
+    override fun onLongItemClicked(goals: Goals, cardView: CardView) {
+        selectedGoal = goals
+        popUpDisplay(cardView)
+    }
+
+    override fun onCheckboxClick(isChecked: Boolean, goals: Goals) {
+        runBlocking {
+            viewModel.updateCheckedGoal(isChecked, goals.id!!)
+            delay(50)
+            viewModel.initializeLogs(viewModel.currentDate)
+        }
+    }
+
+    private fun popUpDisplay(cardView: CardView) {
+        val popup = PopupMenu(context, cardView)
+        popup.setOnMenuItemClickListener(this@GoalsFragment)
+        popup.inflate(R.menu.pop_up)
+        popup.show()
+    }
+
+    override fun onMenuItemClick(item: MenuItem?): Boolean {
+        if(item?.itemId == R.id.deleteLog){
+            runBlocking {
+                viewModel.deleteGoal(selectedGoal)
+                delay(50)
+                viewModel.initializeLogs(viewModel.currentDate)
+            }
+            return true
+        }
+        return false
+    }
+
 }
