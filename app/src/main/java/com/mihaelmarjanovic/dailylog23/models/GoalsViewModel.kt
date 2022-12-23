@@ -41,7 +41,7 @@ class GoalsViewModel(application: Application): AndroidViewModel(application)  {
         currentDate = formatter.format(this.calendar.timeInMillis)
     }
 
-    fun initializeLogs(date: String){
+    fun initializeGoals(date: String){
         viewModelScope.launch {
             _goals.value = goalsRepository.getAllGoals(date)
         }

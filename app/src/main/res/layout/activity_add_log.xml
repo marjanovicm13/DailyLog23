@@ -88,8 +88,18 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_baseline_add_24"
         android:tooltipText="Add image from gallery"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnCamera"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivLogImage"></ImageButton>
+
+    <ImageButton
+        android:id="@+id/btnCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_photo_camera_24"
+        android:tooltipText="Add image from gallery"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btnAddImage"
         app:layout_constraintTop_toBottomOf="@+id/ivLogImage"></ImageButton>
 
 

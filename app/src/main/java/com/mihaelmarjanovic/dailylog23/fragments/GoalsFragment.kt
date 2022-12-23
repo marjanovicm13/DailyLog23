@@ -69,7 +69,7 @@ class GoalsFragment : Fragment(), GoalsAdapter.GoalsClickListener, PopupMenu.OnM
                     runBlocking {
                         viewModel.insertGoal(goal)
                         delay(50)
-                        viewModel.initializeLogs(viewModel.currentDate)
+                        viewModel.initializeGoals(viewModel.currentDate)
                     }
                 }
             }
@@ -78,20 +78,20 @@ class GoalsFragment : Fragment(), GoalsAdapter.GoalsClickListener, PopupMenu.OnM
         val currentDate = binding.tvCurrentDateGoals
         currentDate.text = viewModel.currentDate
 
-        viewModel.initializeLogs(viewModel.currentDate)
+        viewModel.initializeGoals(viewModel.currentDate)
         currentDate.text = viewModel.currentDate
 
         //Previous date
         binding.btnPrevGoals.setOnClickListener{
             viewModel.prevDate()
             currentDate.text =  viewModel.currentDate
-            viewModel.initializeLogs(viewModel.currentDate)
+            viewModel.initializeGoals(viewModel.currentDate)
         }
         //Next date
         binding.btnNextGoals.setOnClickListener{
             viewModel.nextDate()
             currentDate.text =  viewModel.currentDate
-            viewModel.initializeLogs(viewModel.currentDate)
+            viewModel.initializeGoals(viewModel.currentDate)
         }
 
         //Binding add goal button
@@ -121,7 +121,7 @@ class GoalsFragment : Fragment(), GoalsAdapter.GoalsClickListener, PopupMenu.OnM
         runBlocking {
             viewModel.updateCheckedGoal(isChecked, goals.id!!)
             delay(50)
-            viewModel.initializeLogs(viewModel.currentDate)
+            viewModel.initializeGoals(viewModel.currentDate)
         }
     }
 
@@ -137,7 +137,7 @@ class GoalsFragment : Fragment(), GoalsAdapter.GoalsClickListener, PopupMenu.OnM
             runBlocking {
                 viewModel.deleteGoal(selectedGoal)
                 delay(50)
-                viewModel.initializeLogs(viewModel.currentDate)
+                viewModel.initializeGoals(viewModel.currentDate)
             }
             return true
         }
