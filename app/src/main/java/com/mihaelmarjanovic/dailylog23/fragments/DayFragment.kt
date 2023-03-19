@@ -17,6 +17,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,9 +39,10 @@ class DayFragment : Fragment(), LogsAdapter.LogsClickListener, PopupMenu.OnMenuI
 
     private lateinit var binding: FragmentDayBinding
     private lateinit var database: LogsDatabase
-    lateinit var viewModel : LogsViewModel
     lateinit var adapter: LogsAdapter
     lateinit var selectedLog: Logs
+
+    private val viewModel: LogsViewModel by activityViewModels()
 
     private val updateLog = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         result ->
@@ -63,18 +65,26 @@ class DayFragment : Fragment(), LogsAdapter.LogsClickListener, PopupMenu.OnMenuI
         //Inflate the layout for this fragment
         binding = FragmentDayBinding.inflate(layoutInflater)
 
-        viewModel = ViewModelProvider(this,
-        ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)).get(LogsViewModel::class.java)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         viewModel.logs.observe(viewLifecycleOwner){
             adapter.updateList(it)
         }
 
+        val currentDate = binding.tvCurrentDate
+
+        viewModel.currentDateIs.observe(viewLifecycleOwner, Observer {
+                currentDate.text = it
+                viewModel.initializeLogs(it)
+        })
+
         database = LogsDatabase.getDatabase(Application())
 
         setUI()
-
-        return binding.root
     }
 
     private fun setUI(){
@@ -98,23 +108,16 @@ class DayFragment : Fragment(), LogsAdapter.LogsClickListener, PopupMenu.OnMenuI
                 }
             }
         }
-        //Setting current date
-        val currentDate = binding.tvCurrentDate
-        currentDate.text = viewModel.currentDate
-
         viewModel.initializeLogs(viewModel.currentDate)
-        currentDate.text = viewModel.currentDate
 
         //Previous date
         binding.btnPrev.setOnClickListener{
             viewModel.prevDate()
-            currentDate.text =  viewModel.currentDate
             viewModel.initializeLogs(viewModel.currentDate)
         }
         //Next date
         binding.btnNext.setOnClickListener{
             viewModel.nextDate()
-            currentDate.text =  viewModel.currentDate
             viewModel.initializeLogs(viewModel.currentDate)
         }
 

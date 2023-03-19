@@ -1,19 +1,28 @@
 package com.mihaelmarjanovic.dailylog23
 
-import androidx.appcompat.app.AppCompatActivity
+import android.R.attr
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.navigation.findNavController
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import com.mihaelmarjanovic.dailylog23.databinding.ActivityMainBinding
+import com.mihaelmarjanovic.dailylog23.models.LogsViewModel
+
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private var logsViewModel: LogsViewModel? = null
+    private lateinit var mPreferences: SharedPreferences
+    private val SP_THEME_KEY = "darkMode"
+    private var themeIs: Boolean = false;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +36,23 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
 
         bottomNavigationView.setupWithNavController(navController)
+        logsViewModel = ViewModelProvider(this).get(LogsViewModel::class.java)
+        mPreferences = getDefaultSharedPreferences(applicationContext)
+
+        println(mPreferences)
+
+        if (mPreferences!!.contains(SP_THEME_KEY)) {
+            themeIs = mPreferences.getBoolean(SP_THEME_KEY, false)
+            if(themeIs == true){
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            }
+            else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
+        else{
+            println("Nothing here.")
+        }
     }
 
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreferenceCompat
+        app:key="darkMode"
+        app:title="Enable dark mode"/>
+
+    <SwitchPreferenceCompat
+        app:key="usTime"
+        app:title="Enable US(12h) time mode"/>
+
+
+    <Preference
+        app:key="feedback"
+        app:title="Send feedback"
+        app:summary="Report technical issues or suggest new features"/>
+
+<!--    <Preference
+        app:key="feedback"
+        app:title="Send feedback"
+        app:summary="Report technical issues or suggest new features">
+        <intent
+            app:action="app.intent.action.SEND"
+            app:data="mailto:marjanovicm314@gmail.com">
+            <extra
+                app:name="Intent.EXTRA_SUBJECT"
+                app:value="Feedback"/>
+            <extra
+                app:name="Intent.EXTRA_TEXT"
+                app:value="Text of Feedback"/>
+        </intent>
+    </Preference>-->
+
+
+</PreferenceScreen>

@@ -33,14 +33,20 @@ class GoalsAdapter(private val context: Context, val listener: GoalsAdapter.Goal
         holder.goal.text = currentGoal.goal
         holder.checkBox.isChecked = currentGoal.isChecked
 
+
         holder.checkBox.setOnCheckedChangeListener{buttonView, isChecked ->
-            listener.onCheckboxClick(isChecked, GoalsList[holder.adapterPosition])
+            if(buttonView.isShown) {
+                println(holder.adapterPosition)
+                listener.onCheckboxClick(isChecked, GoalsList[holder.adapterPosition])
+            }
         }
 
         holder.goals_layout.setOnClickListener {
+            println(holder.adapterPosition)
             listener.onItemClicked(GoalsList[holder.adapterPosition])
         }
         holder.goals_layout.setOnLongClickListener {
+            println(holder.adapterPosition)
             listener.onLongItemClicked(GoalsList[holder.adapterPosition], holder.goals_layout)
             true
         }

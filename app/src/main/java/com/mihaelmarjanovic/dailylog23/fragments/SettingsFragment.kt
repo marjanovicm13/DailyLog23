@@ -1,60 +1,119 @@
 package com.mihaelmarjanovic.dailylog23.fragments
 
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+import androidx.preference.*
 import com.mihaelmarjanovic.dailylog23.R
+import com.mihaelmarjanovic.dailylog23.databinding.FragmentSettingsBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [SettingsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class SettingsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class SettingsFragment : PreferenceFragmentCompat() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    private lateinit var binding: FragmentSettingsBinding
+    private var mSwitchPreference: SwitchPreferenceCompat? = null
+    private var preferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener? = null
+   // private val prefs = PreferenceManager.getDefaultSharedPreferences()
+
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        setPreferencesFromResource(R.xml.preference, rootKey)
+        val emailPreference = findPreference<Preference>("feedback")
+        emailPreference!!.setOnPreferenceClickListener { it ->
+            val emailIntent = Intent(Intent.ACTION_SENDTO)
+            emailIntent.data = Uri.parse("mailto:")
+            val recipient = "marjanovicm314@gmail.com" // Replace your email id here
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(recipient))
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "DailyLog feedback") // Replace your title with "TITLE"
+            emailIntent.putExtra(Intent.EXTRA_TEXT, "Feedback here")
+            //emailIntent.type = "text/plain" // set content type here
+
+            requireContext().startActivity(
+                Intent.createChooser(
+                    emailIntent,
+                    "Choose email client.."
+                )
+            )
+            true
+        }
+        preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener {sharedPreferences, key ->
+            val preference = findPreference<Preference>(key)
+            println("in prefchangelistener")
+            when(preference){
+                is SwitchPreferenceCompat -> {
+                    println("in switchprefcompat")
+                    if(key == "darkMode"){
+                        if(preference.isChecked){
+                            println("is checked")
+                            AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
+                        }
+                        else{
+                            println("is not checked")
+                            AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
+                        }
+                    }
+                }
+            }
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false)
+    override fun onResume() {
+        super.onResume()
+        preferenceScreen.sharedPreferences
+            ?.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SettingsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SettingsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onPause() {
+        super.onPause()
+        preferenceScreen.sharedPreferences
+            ?.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
+    }
+
+    fun sendEmail(ctx: Context) {
+        val emailIntent = Intent(Intent.ACTION_SEND)
+        val recipient = "marjanovicm314@@gmail.com" // Replace your email id here
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, recipient)
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "TITLE") // Replace your title with "TITLE"
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "TEXT")
+        emailIntent.type = "text/plain" // set content type here
+        ctx.startActivity(
+            Intent.createChooser(
+                emailIntent,
+                "Send E-mail..."
+            )
+        ) // it will provide you supported all app to send email.
+    }
+
+   /* override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentSettingsBinding.inflate(layoutInflater)
+        mSwitchPreference =
+            preferenceManager.findPreference<Preference>("darkMode") as SwitchPreferenceCompat?
+
+        preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener {sharedPreferences, key ->
+            val preference = findPreference<Preference>(key)
+            when(preference){
+                is SwitchPreferenceCompat -> {
+                    if(key == "darkMode"){
+                        if(preference.isChecked){
+                            AppCompatDelegate.MODE_NIGHT_YES
+                        }
+                        else{
+                            AppCompatDelegate.MODE_NIGHT_NO
+                        }
+                    }
                 }
             }
-    }
+        }
+
+        return binding.root
+    }*/
+
 }

@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mihaelmarjanovic.dailylog23.AddGoal
@@ -29,7 +30,7 @@ class GoalsFragment : Fragment(), GoalsAdapter.GoalsClickListener, PopupMenu.OnM
 
     private lateinit var binding: FragmentGoalsBinding
     private lateinit var database: LogsDatabase
-    lateinit var viewModel : GoalsViewModel
+    private val viewModel : GoalsViewModel by activityViewModels()
     lateinit var adapter: GoalsAdapter
     lateinit var selectedGoal: Goals
 
@@ -39,24 +40,32 @@ class GoalsFragment : Fragment(), GoalsAdapter.GoalsClickListener, PopupMenu.OnM
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentGoalsBinding.inflate(layoutInflater)
+        return binding.root
+    }
 
-        viewModel = ViewModelProvider(this,
-            ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)).get(
-            GoalsViewModel::class.java)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         viewModel.goals.observe(viewLifecycleOwner){
-            adapter.updateList(it)
+            if (!binding.recyclerViewGoals.isComputingLayout()) {
+                adapter.updateList(it)
+            }
+        }
+
+        val currentDate = binding.tvCurrentDateGoals
+
+        viewModel.currentDateIs.observe(viewLifecycleOwner){
+            currentDate.text = it
+            viewModel.initializeGoals(it)
         }
 
         database = LogsDatabase.getDatabase(Application())
 
         setUI()
-
-        return binding.root
     }
 
     private fun setUI(){
-        binding.recyclerViewGoals.setHasFixedSize(true)
+        //binding.recyclerViewGoals.setHasFixedSize(true)
         binding.recyclerViewGoals.layoutManager = LinearLayoutManager(requireContext())
         adapter = GoalsAdapter(requireContext(), this)
         binding.recyclerViewGoals.adapter = adapter
@@ -75,22 +84,16 @@ class GoalsFragment : Fragment(), GoalsAdapter.GoalsClickListener, PopupMenu.OnM
             }
         }
 
-        val currentDate = binding.tvCurrentDateGoals
-        currentDate.text = viewModel.currentDate
-
         viewModel.initializeGoals(viewModel.currentDate)
-        currentDate.text = viewModel.currentDate
 
         //Previous date
         binding.btnPrevGoals.setOnClickListener{
             viewModel.prevDate()
-            currentDate.text =  viewModel.currentDate
             viewModel.initializeGoals(viewModel.currentDate)
         }
         //Next date
         binding.btnNextGoals.setOnClickListener{
             viewModel.nextDate()
-            currentDate.text =  viewModel.currentDate
             viewModel.initializeGoals(viewModel.currentDate)
         }
 
@@ -98,6 +101,9 @@ class GoalsFragment : Fragment(), GoalsAdapter.GoalsClickListener, PopupMenu.OnM
         binding.fbAddGoal.setOnClickListener{
             val intent = Intent(context, AddGoal::class.java)
             intent.putExtra("date",  viewModel.currentDate)
+            intent.putExtra("day", viewModel.currentDay)
+            intent.putExtra("month", viewModel.currentMonth)
+            intent.putExtra("year", viewModel.currentYear)
             getContent.launch(intent)
         }
 

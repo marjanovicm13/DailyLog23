@@ -19,7 +19,13 @@ class GoalsViewModel(application: Application): AndroidViewModel(application)  {
     private var dao: GoalsDao
     private var calendar = Calendar.getInstance()
     var currentDate: String
+    var currentDay: Int
+    var currentMonth: Int
+    var currentYear: Int
     val formatter = SimpleDateFormat("dd-MM-yyyy")
+
+    private val _currentDate = MutableLiveData<String>("")
+    val currentDateIs: LiveData<String> get() = _currentDate
 
     private val _goals = MutableLiveData<List<Goals>>()
     val goals: LiveData<List<Goals>>
@@ -29,16 +35,37 @@ class GoalsViewModel(application: Application): AndroidViewModel(application)  {
         dao = LogsDatabase.getDatabase(application).getGoalsDao()
         goalsRepository = GoalsRepository(dao)
         currentDate = formatter.format(Calendar.getInstance().time)
+        currentDay = this.calendar.get(Calendar.DAY_OF_MONTH)
+        currentMonth = this.calendar.get(Calendar.MONTH)
+        currentYear = this.calendar.get(Calendar.YEAR)
+        _currentDate.value = currentDate
     }
 
     fun nextDate(){
         calendar.add(Calendar.DAY_OF_MONTH, +1)
         currentDate = formatter.format(this.calendar.timeInMillis)
+        currentDay = this.calendar.get(Calendar.DAY_OF_MONTH)
+        currentMonth = this.calendar.get(Calendar.MONTH)
+        currentYear = this.calendar.get(Calendar.YEAR)
+        _currentDate.value = currentDate
     }
 
     fun prevDate(){
         calendar.add(Calendar.DAY_OF_MONTH, -1)
         currentDate = formatter.format(this.calendar.timeInMillis)
+        currentDay = this.calendar.get(Calendar.DAY_OF_MONTH)
+        currentMonth = this.calendar.get(Calendar.MONTH)
+        currentYear = this.calendar.get(Calendar.YEAR)
+        _currentDate.value = currentDate
+    }
+
+    fun setDate(year: Int, month: Int, day: Int){
+        currentDay = this.calendar.get(Calendar.DAY_OF_MONTH)
+        currentMonth = this.calendar.get(Calendar.MONTH)
+        currentYear = this.calendar.get(Calendar.YEAR)
+        this.calendar.set(year, month, day)
+        currentDate = formatter.format(this.calendar.timeInMillis)
+        _currentDate.value = currentDate
     }
 
     fun initializeGoals(date: String){
