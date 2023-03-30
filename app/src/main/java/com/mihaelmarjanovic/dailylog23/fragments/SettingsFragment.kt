@@ -15,10 +15,7 @@ import com.mihaelmarjanovic.dailylog23.databinding.FragmentSettingsBinding
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
-    private lateinit var binding: FragmentSettingsBinding
-    private var mSwitchPreference: SwitchPreferenceCompat? = null
     private var preferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener? = null
-   // private val prefs = PreferenceManager.getDefaultSharedPreferences()
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preference, rootKey)
@@ -30,7 +27,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
             emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(recipient))
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, "DailyLog feedback") // Replace your title with "TITLE"
             emailIntent.putExtra(Intent.EXTRA_TEXT, "Feedback here")
-            //emailIntent.type = "text/plain" // set content type here
 
             requireContext().startActivity(
                 Intent.createChooser(
@@ -40,6 +36,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             )
             true
         }
+
         preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener {sharedPreferences, key ->
             val preference = findPreference<Preference>(key)
             println("in prefchangelistener")
@@ -72,48 +69,5 @@ class SettingsFragment : PreferenceFragmentCompat() {
         preferenceScreen.sharedPreferences
             ?.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
     }
-
-    fun sendEmail(ctx: Context) {
-        val emailIntent = Intent(Intent.ACTION_SEND)
-        val recipient = "marjanovicm314@@gmail.com" // Replace your email id here
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, recipient)
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "TITLE") // Replace your title with "TITLE"
-        emailIntent.putExtra(Intent.EXTRA_TEXT, "TEXT")
-        emailIntent.type = "text/plain" // set content type here
-        ctx.startActivity(
-            Intent.createChooser(
-                emailIntent,
-                "Send E-mail..."
-            )
-        ) // it will provide you supported all app to send email.
-    }
-
-   /* override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentSettingsBinding.inflate(layoutInflater)
-        mSwitchPreference =
-            preferenceManager.findPreference<Preference>("darkMode") as SwitchPreferenceCompat?
-
-        preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener {sharedPreferences, key ->
-            val preference = findPreference<Preference>(key)
-            when(preference){
-                is SwitchPreferenceCompat -> {
-                    if(key == "darkMode"){
-                        if(preference.isChecked){
-                            AppCompatDelegate.MODE_NIGHT_YES
-                        }
-                        else{
-                            AppCompatDelegate.MODE_NIGHT_NO
-                        }
-                    }
-                }
-            }
-        }
-
-        return binding.root
-    }*/
 
 }

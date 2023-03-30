@@ -27,11 +27,14 @@ import com.mihaelmarjanovic.dailylog23.R
 import com.mihaelmarjanovic.dailylog23.adapter.LogsAdapter
 import com.mihaelmarjanovic.dailylog23.database.LogsDatabase
 import com.mihaelmarjanovic.dailylog23.databinding.FragmentDayBinding
+import com.mihaelmarjanovic.dailylog23.models.Day
+import com.mihaelmarjanovic.dailylog23.models.DayViewModel
 import com.mihaelmarjanovic.dailylog23.models.Logs
 import com.mihaelmarjanovic.dailylog23.models.LogsViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -43,6 +46,7 @@ class DayFragment : Fragment(), LogsAdapter.LogsClickListener, PopupMenu.OnMenuI
     lateinit var selectedLog: Logs
 
     private val viewModel: LogsViewModel by activityViewModels()
+    private val dayViewModel: DayViewModel by activityViewModels()
 
     private val updateLog = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         result ->
@@ -72,7 +76,28 @@ class DayFragment : Fragment(), LogsAdapter.LogsClickListener, PopupMenu.OnMenuI
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.logs.observe(viewLifecycleOwner){
+            println("observing logs")
             adapter.updateList(it)
+        }
+
+        dayViewModel.dayRating.observe(viewLifecycleOwner){
+            try {
+                if(it.id != null) {
+                    println("rating is" + it.rating)
+                    binding.dayRating.rating = it.rating!!
+                }
+            }
+            catch (e: Exception){
+                println("Id is null, no rating")
+                var newDay = Day(null, 3.toFloat(), viewModel.currentDate)
+                println("New Day is inserted into the DB: " + newDay)
+                runBlocking {
+                    dayViewModel.insertDay(newDay)
+                    delay(50)
+                    dayViewModel.initializeDay(viewModel.currentDate)
+                    dayViewModel.initializeAllDays()
+                }
+            }
         }
 
         val currentDate = binding.tvCurrentDate
@@ -80,6 +105,8 @@ class DayFragment : Fragment(), LogsAdapter.LogsClickListener, PopupMenu.OnMenuI
         viewModel.currentDateIs.observe(viewLifecycleOwner, Observer {
                 currentDate.text = it
                 viewModel.initializeLogs(it)
+                dayViewModel.initializeDay(it)
+                dayViewModel.initializeAllDays()
         })
 
         database = LogsDatabase.getDatabase(Application())
@@ -129,6 +156,38 @@ class DayFragment : Fragment(), LogsAdapter.LogsClickListener, PopupMenu.OnMenuI
             getContent.launch(intent)
         }
 
+        binding.dayRating.setOnRatingBarChangeListener { ratingBar, fl, b ->
+            //var day = Day(null, fl, viewModel.currentDate)
+            var day = dayViewModel.dayRating
+            println(day.value)
+
+            if(day.value!=null) {
+                println(day.value!!.id!!)
+                //if(dayViewModel.getDayRating(viewModel.currentDate))
+                if (fl.compareTo(0) == 0) {
+                    println("Day"+ day.value!!.id!! +"is updated in the database")
+                    runBlocking {
+                        dayViewModel.setNewRating(day.value!!.id!!, 1.toFloat())
+                        dayViewModel.updateDay()
+                        delay(50)
+                        dayViewModel.initializeDay(viewModel.currentDate)
+                        dayViewModel.initializeAllDays()
+                    }
+                }
+                else{
+                    println("Day"+ day.value!!.id!! +"is updated in the database")
+                    runBlocking {
+                        dayViewModel.setNewRating(day.value!!.id!!, fl)
+                        dayViewModel.updateDay()
+                        delay(50)
+                        dayViewModel.initializeDay(viewModel.currentDate)
+                        dayViewModel.initializeAllDays()
+                    }
+
+                }
+            }
+           // dayViewModel.insertDay(day)
+        }
     }
 
     override fun onItemClicked(logs: Logs) {

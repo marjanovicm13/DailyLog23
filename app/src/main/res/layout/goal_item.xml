@@ -33,7 +33,7 @@
                 android:layout_marginTop="11dp"
                 android:layout_toRightOf="@id/checkBoxGoal"
                 android:text="Title"
-                android:textColor="@color/black"
+                android:textColor="?colorOnSecondary"
                 android:textSize="18sp"></TextView>
 
         </RelativeLayout>

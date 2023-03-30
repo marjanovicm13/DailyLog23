@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import com.mihaelmarjanovic.dailylog23.databinding.ActivityAddGoalBinding
 import com.mihaelmarjanovic.dailylog23.models.Goals
@@ -20,6 +21,7 @@ class AddGoal : AppCompatActivity() {
     private lateinit var binding: ActivityAddGoalBinding
     private lateinit var goal: Goals
     private lateinit var oldGoal: Goals
+    private var notification: Boolean = false
     var isUpdate = false
 
     override fun onPause() {
@@ -40,6 +42,17 @@ class AddGoal : AppCompatActivity() {
             isUpdate = true
         }catch (e: Exception){
             e.printStackTrace()
+        }
+
+        binding.addNotification.setOnClickListener{
+            if(binding.timePicker.visibility == View.VISIBLE) {
+                binding.timePicker.visibility = View.GONE
+                notification = false
+            }
+            else{
+                binding.timePicker.visibility = View.VISIBLE
+                notification = true
+            }
         }
 
         binding.imageViewCheck.setOnClickListener {
@@ -66,7 +79,9 @@ class AddGoal : AppCompatActivity() {
                     )
                 }
                 runBlocking {
-                    scheduleNotification()
+                    if(notification == true) {
+                        scheduleNotification()
+                    }
                 }
                 intent.putExtra("goal", goal)
                 setResult(Activity.RESULT_OK, intent)
