@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.preference.*
 import com.mihaelmarjanovic.dailylog23.R
+import com.mihaelmarjanovic.dailylog23.databinding.FragmentCalendarBinding
 import com.mihaelmarjanovic.dailylog23.databinding.FragmentSettingsBinding
 
 
@@ -39,17 +40,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener {sharedPreferences, key ->
             val preference = findPreference<Preference>(key)
-            println("in prefchangelistener")
             when(preference){
                 is SwitchPreferenceCompat -> {
-                    println("in switchprefcompat")
                     if(key == "darkMode"){
                         if(preference.isChecked){
-                            println("is checked")
                             AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
                         }
                         else{
-                            println("is not checked")
                             AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
                         }
                     }

@@ -27,10 +27,7 @@ import com.mihaelmarjanovic.dailylog23.R
 import com.mihaelmarjanovic.dailylog23.adapter.LogsAdapter
 import com.mihaelmarjanovic.dailylog23.database.LogsDatabase
 import com.mihaelmarjanovic.dailylog23.databinding.FragmentDayBinding
-import com.mihaelmarjanovic.dailylog23.models.Day
-import com.mihaelmarjanovic.dailylog23.models.DayViewModel
-import com.mihaelmarjanovic.dailylog23.models.Logs
-import com.mihaelmarjanovic.dailylog23.models.LogsViewModel
+import com.mihaelmarjanovic.dailylog23.models.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -47,6 +44,7 @@ class DayFragment : Fragment(), LogsAdapter.LogsClickListener, PopupMenu.OnMenuI
 
     private val viewModel: LogsViewModel by activityViewModels()
     private val dayViewModel: DayViewModel by activityViewModels()
+    private val viewModelGoals: GoalsViewModel by activityViewModels()
 
     private val updateLog = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         result ->
@@ -89,7 +87,7 @@ class DayFragment : Fragment(), LogsAdapter.LogsClickListener, PopupMenu.OnMenuI
             }
             catch (e: Exception){
                 println("Id is null, no rating")
-                var newDay = Day(null, 3.toFloat(), viewModel.currentDate)
+                var newDay = Day(null, 0.toFloat(), viewModel.currentDate)
                 println("New Day is inserted into the DB: " + newDay)
                 runBlocking {
                     dayViewModel.insertDay(newDay)
@@ -140,11 +138,13 @@ class DayFragment : Fragment(), LogsAdapter.LogsClickListener, PopupMenu.OnMenuI
         //Previous date
         binding.btnPrev.setOnClickListener{
             viewModel.prevDate()
+            viewModelGoals.prevDate()
             viewModel.initializeLogs(viewModel.currentDate)
         }
         //Next date
         binding.btnNext.setOnClickListener{
             viewModel.nextDate()
+            viewModelGoals.nextDate()
             viewModel.initializeLogs(viewModel.currentDate)
         }
 
@@ -167,7 +167,8 @@ class DayFragment : Fragment(), LogsAdapter.LogsClickListener, PopupMenu.OnMenuI
                 if (fl.compareTo(0) == 0) {
                     println("Day"+ day.value!!.id!! +"is updated in the database")
                     runBlocking {
-                        dayViewModel.setNewRating(day.value!!.id!!, 1.toFloat())
+                        //dayViewModel.deleteDay(day.value!!)
+                        dayViewModel.setNewRating(day.value!!.id!!, 0.toFloat())
                         dayViewModel.updateDay()
                         delay(50)
                         dayViewModel.initializeDay(viewModel.currentDate)

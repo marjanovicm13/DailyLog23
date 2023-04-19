@@ -3,6 +3,7 @@ package com.mihaelmarjanovic.dailylog23.fragments
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -12,10 +13,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CalendarView.OnDateChangeListener
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import com.mihaelmarjanovic.dailylog23.R
 import com.mihaelmarjanovic.dailylog23.databinding.FragmentCalendarBinding
 import com.mihaelmarjanovic.dailylog23.models.Day
@@ -42,6 +45,10 @@ class CalendarFragment : Fragment() {
     private val formatter = SimpleDateFormat("dd-MM-yyyy")
     private lateinit var allDays: List<Day>
 
+    private lateinit var mPreferences: SharedPreferences
+    private val SP_THEME_KEY = "darkMode"
+    private var themeIs: Boolean = false;
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -55,6 +62,21 @@ class CalendarFragment : Fragment() {
 
             binding.calendarView.setDate(viewModel.calendar.timeInMillis)
         })*/
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+
+        if (mPreferences!!.contains(SP_THEME_KEY)) {
+            themeIs = mPreferences.getBoolean(SP_THEME_KEY, false)
+            if(themeIs == true){
+                binding.materialCalendarView.setDateTextAppearance(R.color.white)
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            }
+            else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
+        else{
+            println("Nothing here.")
+        }
 
        binding.materialCalendarView.setOnDateChangedListener(OnDateSelectedListener{ view, date, bool ->
             viewModel.setDate(date.year, date.month, date.day)

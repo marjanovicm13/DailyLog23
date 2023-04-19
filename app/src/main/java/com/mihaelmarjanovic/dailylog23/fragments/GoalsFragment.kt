@@ -20,8 +20,10 @@ import com.mihaelmarjanovic.dailylog23.R
 import com.mihaelmarjanovic.dailylog23.adapter.GoalsAdapter
 import com.mihaelmarjanovic.dailylog23.database.LogsDatabase
 import com.mihaelmarjanovic.dailylog23.databinding.FragmentGoalsBinding
+import com.mihaelmarjanovic.dailylog23.models.DayViewModel
 import com.mihaelmarjanovic.dailylog23.models.Goals
 import com.mihaelmarjanovic.dailylog23.models.GoalsViewModel
+import com.mihaelmarjanovic.dailylog23.models.LogsViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
@@ -31,6 +33,7 @@ class GoalsFragment : Fragment(), GoalsAdapter.GoalsClickListener, PopupMenu.OnM
     private lateinit var binding: FragmentGoalsBinding
     private lateinit var database: LogsDatabase
     private val viewModel : GoalsViewModel by activityViewModels()
+    private val dayViewModel : LogsViewModel by activityViewModels()
     lateinit var adapter: GoalsAdapter
     lateinit var selectedGoal: Goals
 
@@ -89,11 +92,13 @@ class GoalsFragment : Fragment(), GoalsAdapter.GoalsClickListener, PopupMenu.OnM
         //Previous date
         binding.btnPrevGoals.setOnClickListener{
             viewModel.prevDate()
+            dayViewModel.prevDate()
             viewModel.initializeGoals(viewModel.currentDate)
         }
         //Next date
         binding.btnNextGoals.setOnClickListener{
             viewModel.nextDate()
+            dayViewModel.nextDate()
             viewModel.initializeGoals(viewModel.currentDate)
         }
 

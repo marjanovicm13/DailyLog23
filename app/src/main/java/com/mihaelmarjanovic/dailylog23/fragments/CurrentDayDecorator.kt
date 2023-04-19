@@ -36,8 +36,11 @@ class CurrentDayDecorator(context: Activity?, currentDay: CalendarDay, day: Day)
         else if(day.rating!!.compareTo(2) == 0){
             drawable = ContextCompat.getDrawable(context!!, com.mihaelmarjanovic.dailylog23.R.color.orange)
         }
-        else{
+        else if(day.rating!!.compareTo(1) == 0){
             drawable = ContextCompat.getDrawable(context!!, com.mihaelmarjanovic.dailylog23.R.color.red)
+        }
+        else{
+            drawable = ContextCompat.getDrawable(context!!, R.color.system_accent1_0)
         }
     }
 }
