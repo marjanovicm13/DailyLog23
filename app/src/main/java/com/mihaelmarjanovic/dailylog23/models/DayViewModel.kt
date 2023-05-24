@@ -30,6 +30,7 @@ class DayViewModel(application: Application): AndroidViewModel(application) {
     val days: LiveData<List<Day>>
         get() = _days
 
+
     init {
         dao = LogsDatabase.getDatabase(application).getDayDao()
         repository = DayRepository(dao)

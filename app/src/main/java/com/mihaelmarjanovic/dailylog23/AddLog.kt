@@ -4,18 +4,20 @@ import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
-import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
-import android.graphics.Picture
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
@@ -29,9 +31,10 @@ import com.mihaelmarjanovic.dailylog23.models.Logs
 import kotlinx.android.synthetic.main.activity_add_log.*
 import java.io.File
 import java.io.IOException
-import java.text.DateFormat
+import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 
 class AddLog : AppCompatActivity() {
@@ -43,6 +46,7 @@ class AddLog : AppCompatActivity() {
     private val CAMERA_REQUEST_CODE = 2
     private lateinit var currentPhotoPath: String
     private lateinit var photoURI: Uri
+    private lateinit var matrix: Matrix
 
     private lateinit var binding: ActivityAddLogBinding
     private lateinit var log: Logs
@@ -54,6 +58,7 @@ class AddLog : AppCompatActivity() {
         binding = ActivityAddLogBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
+
 
         try {
             oldLog = intent.getSerializableExtra("current_log") as Logs
@@ -158,7 +163,6 @@ class AddLog : AppCompatActivity() {
     }
 
     private fun camera() {
-        println("I am in camera")
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             // Ensure that there's a camera activity to handle the intent
             takePictureIntent.resolveActivity(packageManager)?.also {
@@ -208,7 +212,6 @@ class AddLog : AppCompatActivity() {
     @Throws(IOException::class)
     fun createImageFile(): File {
         // Create an image file name
-        println("I am in create an image file name")
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val storageDir: File = getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
         return File.createTempFile(
@@ -225,11 +228,8 @@ class AddLog : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         super.onActivityResult(requestCode, resultCode, data)
-        println("i am in activity results, data is " + data + "request code is " + requestCode + " result code is " + resultCode)
         if(requestCode == 1 && resultCode == RESULT_OK && data != null){
             pickedPhoto = data.data
-            //println(pickedPhoto.toString())
-            //println(pickedPhoto)
             contentResolver.takePersistableUriPermission(pickedPhoto!!, Intent.FLAG_GRANT_READ_URI_PERMISSION)
             if(Build.VERSION.SDK_INT >= 28){
                 val source = ImageDecoder.createSource(this.contentResolver, pickedPhoto!!)
@@ -242,7 +242,6 @@ class AddLog : AppCompatActivity() {
             }
         }
         else if(requestCode == 2 && resultCode == RESULT_OK){
-            println("I am in resuslts, data is " + data)
             pickedPhoto = photoURI
             if(Build.VERSION.SDK_INT >= 28){
                 val source = ImageDecoder.createSource(this.contentResolver, pickedPhoto!!)
@@ -253,18 +252,6 @@ class AddLog : AppCompatActivity() {
                 pickedBitMap = MediaStore.Images.Media.getBitmap(this.contentResolver, pickedPhoto)
                 ivLogImage.setImageBitmap(pickedBitMap)
             }
-            //val path = MediaStore.Images.Media.insertImage(this.contentResolver, bitmap, "Title", null)
-            //val options = BitmapFactory.Options()
-            //options.inPreferredConfig = Bitmap.Config.ARGB_8888
-            //val bitmap = BitmapFactory.decodeFile(cameraPicUri, options)
-           // myDir.mkdirs()
-
-            //val out = FileOutputStream(file)
-            //bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
-            //out.flush()
-            //out.close()
-            //pickedPhoto = Uri.fromFile(file)
-            //ivLogImage.setImageBitmap(bitmap)
         }
     }
 

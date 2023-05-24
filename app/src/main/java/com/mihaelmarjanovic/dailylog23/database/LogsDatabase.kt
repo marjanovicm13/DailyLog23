@@ -11,7 +11,7 @@ import com.mihaelmarjanovic.dailylog23.models.Goals
 import com.mihaelmarjanovic.dailylog23.models.Logs
 import com.mihaelmarjanovic.dailylog23.utilities.DATABASE_NAME
 
-@Database(entities = arrayOf(Logs::class, Goals::class, Day::class), version = 31,exportSchema = false)
+@Database(entities = arrayOf(Logs::class, Goals::class, Day::class), version = 34,exportSchema = false)
 abstract class LogsDatabase: RoomDatabase() {
 
     abstract fun getLogsDao(): LogsDao

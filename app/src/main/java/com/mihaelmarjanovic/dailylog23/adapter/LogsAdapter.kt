@@ -69,11 +69,17 @@ class LogsAdapter(private val context: Context, val listener: LogsClickListener)
                     isImageFitToScreen=false;
                     holder.image.setLayoutParams(LinearLayout.LayoutParams(width.toInt(), height.toInt()));
                     holder.image.setAdjustViewBounds(true);
+
                 }else{
                     isImageFitToScreen=true;
                     holder.image.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
                     holder.image.setScaleType(ImageView.ScaleType.FIT_XY);
                 }
+        }
+
+        holder.image.setOnLongClickListener{
+            holder.image.rotation = holder.image.rotation + 90;
+            true
         }
 
     }
