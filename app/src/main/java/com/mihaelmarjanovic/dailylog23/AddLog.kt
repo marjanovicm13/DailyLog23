@@ -4,20 +4,16 @@ import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.graphics.Matrix
-import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
@@ -31,7 +27,6 @@ import com.mihaelmarjanovic.dailylog23.models.Logs
 import kotlinx.android.synthetic.main.activity_add_log.*
 import java.io.File
 import java.io.IOException
-import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -52,6 +47,7 @@ class AddLog : AppCompatActivity() {
     private lateinit var log: Logs
     private lateinit var oldLog: Logs
     var isUpdate = false
+    private lateinit var title:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,7 +74,12 @@ class AddLog : AppCompatActivity() {
         }
 
         binding.imageViewCheck.setOnClickListener{
-            val title = binding.etTitle.text.toString()
+            if(binding.etTitle.text.toString() == ""){
+                title = intent.getSerializableExtra("date").toString()
+            }
+            else {
+                title = binding.etTitle.text.toString()
+            }
             val logContent = binding.etLog.text.toString()
             val logDate = intent.getSerializableExtra("date")
             val logTime = intent.getSerializableExtra("time")
@@ -93,7 +94,6 @@ class AddLog : AppCompatActivity() {
 
             if(title.isNotEmpty() || logContent.isNotEmpty()){
                 if(isUpdate == true){
-                    println("old image is " + oldLog.image)
                     log = Logs(
                         oldLog.id,
                         title,
@@ -113,7 +113,6 @@ class AddLog : AppCompatActivity() {
                         image
                     )
                 }
-                //println("new image is " + log.image)
                 intent.putExtra("log", log)
                 setResult(Activity.RESULT_OK, intent)
                 finish()
@@ -182,7 +181,6 @@ class AddLog : AppCompatActivity() {
                         "com.mihaelmarjanovic.dailylog23.fileprovider",
                         it
                     )
-                    println("photo uri is " + photoURI)
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                     startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE)
                 }

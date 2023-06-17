@@ -1,6 +1,5 @@
 package com.mihaelmarjanovic.dailylog23.fragments
 
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
@@ -10,8 +9,6 @@ import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.preference.*
 import com.mihaelmarjanovic.dailylog23.R
-import com.mihaelmarjanovic.dailylog23.databinding.FragmentCalendarBinding
-import com.mihaelmarjanovic.dailylog23.databinding.FragmentSettingsBinding
 
 
 class SettingsFragment : PreferenceFragmentCompat() {

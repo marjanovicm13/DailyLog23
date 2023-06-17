@@ -13,8 +13,6 @@ import java.util.*
 
 class LogsViewModel(application: Application): AndroidViewModel(application) {
 
-    private val state: SavedStateHandle? = null
-
     private val repository: LogsRepository
     private var dao: LogsDao
     var calendar = Calendar.getInstance()

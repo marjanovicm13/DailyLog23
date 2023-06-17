@@ -10,11 +10,9 @@ import android.view.View
 import android.widget.Toast
 import com.mihaelmarjanovic.dailylog23.databinding.ActivityAddGoalBinding
 import com.mihaelmarjanovic.dailylog23.models.Goals
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import java.lang.Exception
 import java.util.*
-import kotlin.math.min
 
 class AddGoal : AppCompatActivity() {
 
@@ -23,10 +21,6 @@ class AddGoal : AppCompatActivity() {
     private lateinit var oldGoal: Goals
     private var notification: Boolean = false
     var isUpdate = false
-
-    override fun onPause() {
-        super.onPause()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +52,6 @@ class AddGoal : AppCompatActivity() {
         binding.imageViewCheck.setOnClickListener {
             val goalContent = binding.etGoal.text.toString()
             val goalDate = intent.getSerializableExtra("date")
-            //val logTime = intent.getSerializableExtra("time")
 
             val intent = Intent()
 
@@ -117,14 +110,10 @@ class AddGoal : AppCompatActivity() {
             time,
             pendingIntent
         )
-       // runBlocking {
-            showAlert(time, message)
-         //   delay(3000)
-        //}
+        showAlert(time, message)
     }
 
     private fun showAlert(time: Long, message: String) {
-        //Dont need this
         val date = Date(time)
         val dateFormat = android.text.format.DateFormat.getLongDateFormat(applicationContext)
         val timeFormat = android.text.format.DateFormat.getTimeFormat(applicationContext)

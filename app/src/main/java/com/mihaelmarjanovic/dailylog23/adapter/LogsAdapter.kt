@@ -1,12 +1,8 @@
 package com.mihaelmarjanovic.dailylog23.adapter
 
 import android.content.Context
-import android.content.UriPermission
-import android.content.res.Configuration
-import android.content.res.Resources
 import android.net.Uri
 import android.provider.MediaStore
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -96,8 +92,6 @@ class LogsAdapter(private val context: Context, val listener: LogsClickListener)
         LogsList.addAll(fullList)
         notifyDataSetChanged()
     }
-
-    // For search bar - minute 1h 13min fun filterList()
 
     inner class LogsViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val logs_layout = itemView.findViewById<CardView>(R.id.cardLayout)

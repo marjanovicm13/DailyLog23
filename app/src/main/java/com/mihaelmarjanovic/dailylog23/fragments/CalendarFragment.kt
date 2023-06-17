@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.preference.PreferenceManager
@@ -17,13 +16,9 @@ import com.mihaelmarjanovic.dailylog23.models.DayViewModel
 import com.mihaelmarjanovic.dailylog23.models.GoalsViewModel
 import com.mihaelmarjanovic.dailylog23.models.LogsViewModel
 import com.prolificinteractive.materialcalendarview.CalendarDay
-import com.prolificinteractive.materialcalendarview.DayViewDecorator
-import com.prolificinteractive.materialcalendarview.DayViewFacade
-import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
-import java.util.*
 
 
 class CalendarFragment : Fragment() {
@@ -57,10 +52,6 @@ class CalendarFragment : Fragment() {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
         }
-        else{
-            println("Nothing here.")
-        }
-
 
         binding.materialCalendarView.setOnDateChangedListener { widget, date, selected ->
             viewModel.setDate(date.year, date.month, date.day)
@@ -74,8 +65,6 @@ class CalendarFragment : Fragment() {
         }
 
         if(allDays != null) {
-            println("its not null")
-            println(allDays)
             for (day in allDays) {
                 println(day)
                 var myDate = CalendarDay.from(formatter.parse(day.date))
@@ -92,7 +81,7 @@ class CalendarFragment : Fragment() {
             }
         }
         else{
-            println("its null")
+            println("No days are rated.")
         }
 
         return binding.root

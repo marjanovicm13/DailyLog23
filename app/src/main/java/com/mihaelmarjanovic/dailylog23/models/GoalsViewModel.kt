@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.mihaelmarjanovic.dailylog23.database.GoalsDao
 import com.mihaelmarjanovic.dailylog23.database.GoalsRepository
 import com.mihaelmarjanovic.dailylog23.database.LogsDatabase
-import com.mihaelmarjanovic.dailylog23.database.LogsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat

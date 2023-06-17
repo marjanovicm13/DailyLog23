@@ -1,7 +1,5 @@
 package com.mihaelmarjanovic.dailylog23
 
-import android.R.attr
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

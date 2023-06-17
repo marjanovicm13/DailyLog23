@@ -6,7 +6,7 @@ import com.mihaelmarjanovic.dailylog23.models.Logs
 class LogsRepository(private val logsDao: LogsDao) {
 
     suspend fun getAllLogs(date: String): List<Logs>{
-        return logsDao.getAllNotes(date)
+        return logsDao.getAllLogs(date)
     }
 
     suspend fun insert(logs: Logs){

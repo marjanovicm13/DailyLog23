@@ -1,6 +1,5 @@
 package com.mihaelmarjanovic.dailylog23.adapter
 
-import android.app.Application
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -8,15 +7,9 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.mihaelmarjanovic.dailylog23.R
-import com.mihaelmarjanovic.dailylog23.database.GoalsDao
-import com.mihaelmarjanovic.dailylog23.database.GoalsRepository
-import com.mihaelmarjanovic.dailylog23.database.LogsDatabase
 import com.mihaelmarjanovic.dailylog23.models.Goals
-import com.mihaelmarjanovic.dailylog23.models.GoalsViewModel
-import com.mihaelmarjanovic.dailylog23.models.Logs
 
 class GoalsAdapter(private val context: Context, val listener: GoalsAdapter.GoalsClickListener): RecyclerView.Adapter<GoalsAdapter.GoalsViewHolder>() {
     private val GoalsList = ArrayList<Goals>()
@@ -41,10 +34,6 @@ class GoalsAdapter(private val context: Context, val listener: GoalsAdapter.Goal
             }
         }
 
-        holder.goals_layout.setOnClickListener {
-            println(holder.adapterPosition)
-            listener.onItemClicked(GoalsList[holder.adapterPosition])
-        }
         holder.goals_layout.setOnLongClickListener {
             println(holder.adapterPosition)
             listener.onLongItemClicked(GoalsList[holder.adapterPosition], holder.goals_layout)
@@ -72,7 +61,6 @@ class GoalsAdapter(private val context: Context, val listener: GoalsAdapter.Goal
     }
 
     interface GoalsClickListener{
-        fun onItemClicked(goals: Goals)
         fun onLongItemClicked(goals: Goals, cardView: CardView)
         fun onCheckboxClick(isChecked: Boolean, goals: Goals)
     }

@@ -3,25 +3,18 @@ package com.mihaelmarjanovic.dailylog23.fragments
 import android.app.Activity
 import android.app.Application
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.mihaelmarjanovic.dailylog23.AddLog
 import com.mihaelmarjanovic.dailylog23.R
 import com.mihaelmarjanovic.dailylog23.adapter.LogsAdapter
@@ -29,11 +22,8 @@ import com.mihaelmarjanovic.dailylog23.database.LogsDatabase
 import com.mihaelmarjanovic.dailylog23.databinding.FragmentDayBinding
 import com.mihaelmarjanovic.dailylog23.models.*
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.lang.Exception
-import java.text.SimpleDateFormat
-import java.util.*
 
 class DayFragment : Fragment(), LogsAdapter.LogsClickListener, PopupMenu.OnMenuItemClickListener {
 
@@ -74,21 +64,17 @@ class DayFragment : Fragment(), LogsAdapter.LogsClickListener, PopupMenu.OnMenuI
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.logs.observe(viewLifecycleOwner){
-            println("observing logs")
             adapter.updateList(it)
         }
 
         dayViewModel.dayRating.observe(viewLifecycleOwner){
             try {
                 if(it.id != null) {
-                    println("rating is" + it.rating)
                     binding.dayRating.rating = it.rating!!
                 }
             }
             catch (e: Exception){
-                println("Id is null, no rating")
                 var newDay = Day(null, 0.toFloat(), viewModel.currentDate)
-                println("New Day is inserted into the DB: " + newDay)
                 runBlocking {
                     dayViewModel.insertDay(newDay)
                     delay(50)
@@ -114,7 +100,6 @@ class DayFragment : Fragment(), LogsAdapter.LogsClickListener, PopupMenu.OnMenuI
 
     private fun setUI(){
         //Set recyclerView
-        binding.recyclerView.setHasFixedSize(true)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         adapter = LogsAdapter(requireContext(), this)
         binding.recyclerView.adapter = adapter
@@ -157,17 +142,11 @@ class DayFragment : Fragment(), LogsAdapter.LogsClickListener, PopupMenu.OnMenuI
         }
 
         binding.dayRating.setOnRatingBarChangeListener { ratingBar, fl, b ->
-            //var day = Day(null, fl, viewModel.currentDate)
             var day = dayViewModel.dayRating
-            println(day.value)
 
             if(day.value!=null) {
-                println(day.value!!.id!!)
-                //if(dayViewModel.getDayRating(viewModel.currentDate))
                 if (fl.compareTo(0) == 0) {
-                    println("Day"+ day.value!!.id!! +"is updated in the database")
                     runBlocking {
-                        //dayViewModel.deleteDay(day.value!!)
                         dayViewModel.setNewRating(day.value!!.id!!, 0.toFloat())
                         dayViewModel.updateDay()
                         delay(50)
@@ -176,7 +155,6 @@ class DayFragment : Fragment(), LogsAdapter.LogsClickListener, PopupMenu.OnMenuI
                     }
                 }
                 else{
-                    println("Day"+ day.value!!.id!! +"is updated in the database")
                     runBlocking {
                         dayViewModel.setNewRating(day.value!!.id!!, fl)
                         dayViewModel.updateDay()
@@ -187,7 +165,6 @@ class DayFragment : Fragment(), LogsAdapter.LogsClickListener, PopupMenu.OnMenuI
 
                 }
             }
-           // dayViewModel.insertDay(day)
         }
     }
 

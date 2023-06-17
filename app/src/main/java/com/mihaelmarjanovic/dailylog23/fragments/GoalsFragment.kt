@@ -13,17 +13,13 @@ import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mihaelmarjanovic.dailylog23.AddGoal
 import com.mihaelmarjanovic.dailylog23.R
 import com.mihaelmarjanovic.dailylog23.adapter.GoalsAdapter
 import com.mihaelmarjanovic.dailylog23.database.LogsDatabase
 import com.mihaelmarjanovic.dailylog23.databinding.FragmentGoalsBinding
-import com.mihaelmarjanovic.dailylog23.models.DayViewModel
-import com.mihaelmarjanovic.dailylog23.models.Goals
-import com.mihaelmarjanovic.dailylog23.models.GoalsViewModel
-import com.mihaelmarjanovic.dailylog23.models.LogsViewModel
+import com.mihaelmarjanovic.dailylog23.models.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
@@ -68,7 +64,6 @@ class GoalsFragment : Fragment(), GoalsAdapter.GoalsClickListener, PopupMenu.OnM
     }
 
     private fun setUI(){
-        //binding.recyclerViewGoals.setHasFixedSize(true)
         binding.recyclerViewGoals.layoutManager = LinearLayoutManager(requireContext())
         adapter = GoalsAdapter(requireContext(), this)
         binding.recyclerViewGoals.adapter = adapter
@@ -112,15 +107,6 @@ class GoalsFragment : Fragment(), GoalsAdapter.GoalsClickListener, PopupMenu.OnM
             getContent.launch(intent)
         }
 
-    }
-
-    override fun onItemClicked(goals: Goals) {
-     /*   val intent = Intent(context, AddLog::class.java)
-        intent.putExtra("current_log", logs)
-        intent.putExtra("date", logs.date)
-        intent.putExtra("time", logs.timeOfLog)
-        intent.putExtra("image", logs.image)
-        updateLog.launch(intent)*/
     }
 
     override fun onLongItemClicked(goals: Goals, cardView: CardView) {

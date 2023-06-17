@@ -17,7 +17,6 @@ class DayViewModel(application: Application): AndroidViewModel(application) {
     private var dao: DayDao
     var currentDate: String
     val formatter = SimpleDateFormat("dd-MM-yyyy")
-    var calendar = Calendar.getInstance()
 
     private val _currentDate = MutableLiveData<String>("")
     val currentDateIs: LiveData<String> get() = _currentDate
@@ -37,33 +36,6 @@ class DayViewModel(application: Application): AndroidViewModel(application) {
         currentDate = formatter.format(Calendar.getInstance().time)
     }
 
-    fun nextDate(){
-        calendar.add(Calendar.DAY_OF_MONTH, +1)
-        currentDate = formatter.format(this.calendar.timeInMillis)
-      //  currentDay = this.calendar.get(Calendar.DAY_OF_MONTH)
-        //currentMonth = this.calendar.get(Calendar.MONTH)
-       // currentYear = this.calendar.get(Calendar.YEAR)
-        _currentDate.value = currentDate
-    }
-
-    fun prevDate(){
-        calendar.add(Calendar.DAY_OF_MONTH, -1)
-        currentDate = formatter.format(this.calendar.timeInMillis)
-     //   currentDay = this.calendar.get(Calendar.DAY_OF_MONTH)
-      //  currentMonth = this.calendar.get(Calendar.MONTH)
-      //  currentYear = this.calendar.get(Calendar.YEAR)
-        _currentDate.value = currentDate
-    }
-
-    fun setDate(year: Int, month: Int, day: Int){
-      //  currentDay = this.calendar.get(Calendar.DAY_OF_MONTH)
-      //  currentMonth = this.calendar.get(Calendar.MONTH)
-     //   currentYear = this.calendar.get(Calendar.YEAR)
-        this.calendar.set(year, month, day)
-        currentDate = formatter.format(this.calendar.timeInMillis)
-        _currentDate.value = currentDate
-    }
-
     fun initializeDay(date: String){
         viewModelScope.launch {
             _dayRating.value = repository.getDayRating(date)
@@ -79,10 +51,6 @@ class DayViewModel(application: Application): AndroidViewModel(application) {
     fun setNewRating(id: Int, newRating: Float){
         var updatedDay = Day(id, newRating, currentDate)
         _dayRating.value = updatedDay
-    }
-
-    fun getDate(): String{
-        return _currentDate.value!!
     }
 
     fun insertDay(day: Day) = viewModelScope.launch(Dispatchers.IO) {

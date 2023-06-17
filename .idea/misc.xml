@@ -3,6 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Fakultet/Fakultet/Projekti/Kotlin/DailyLog-FInal/DailyLog23/app/src/main/res/drawable/ic_baseline_photo_camera_24.xml" value="0.2375" />
+        <entry key="..\:/Fakultet/Fakultet/Projekti/Kotlin/DailyLog-FInal/DailyLog23/app/src/main/res/layout/activity_add_goal.xml" value="0.22826086956521738" />
+        <entry key="..\:/Fakultet/Fakultet/Projekti/Kotlin/DailyLog-FInal/DailyLog23/app/src/main/res/layout/activity_add_log.xml" value="0.22826086956521738" />
+        <entry key="..\:/Fakultet/Fakultet/Projekti/Kotlin/DailyLog-FInal/DailyLog23/app/src/main/res/layout/activity_main.xml" value="0.22826086956521738" />
+        <entry key="..\:/Fakultet/Fakultet/Projekti/Kotlin/DailyLog-FInal/DailyLog23/app/src/main/res/layout/fragment_calendar.xml" value="0.22826086956521738" />
+        <entry key="..\:/Fakultet/Fakultet/Projekti/Kotlin/DailyLog-FInal/DailyLog23/app/src/main/res/layout/fragment_day.xml" value="0.22826086956521738" />
+        <entry key="..\:/Fakultet/Fakultet/Projekti/Kotlin/DailyLog-FInal/DailyLog23/app/src/main/res/layout/fragment_goals.xml" value="0.22826086956521738" />
+        <entry key="..\:/Fakultet/Fakultet/Projekti/Kotlin/DailyLog-FInal/DailyLog23/app/src/main/res/layout/fragment_settings.xml" value="0.22826086956521738" />
+        <entry key="..\:/Fakultet/Fakultet/Projekti/Kotlin/DailyLog-FInal/DailyLog23/app/src/main/res/layout/goal_item.xml" value="0.22826086956521738" />
+        <entry key="..\:/Fakultet/Fakultet/Projekti/Kotlin/DailyLog-FInal/DailyLog23/app/src/main/res/layout/log_item.xml" value="0.22826086956521738" />
+        <entry key="..\:/Fakultet/Fakultet/Projekti/Kotlin/DailyLog-FInal/DailyLog23/app/src/main/res/menu/bottom_nav.xml" value="0.1" />
+        <entry key="..\:/Fakultet/Fakultet/Projekti/Kotlin/DailyLog-FInal/DailyLog23/app/src/main/res/menu/pop_up.xml" value="0.25416666666666665" />
+        <entry key="..\:/Fakultet/Fakultet/Projekti/Kotlin/DailyLog-FInal/DailyLog23/app/src/main/res/xml/preference.xml" value="0.22826086956521738" />
         <entry key="..\:/Fakultet/Fakultet/Projekti/Kotlin/DailyLog23/app/src/main/res/drawable/selector.xml" value="0.1955" />
         <entry key="..\:/Fakultet/Fakultet/Projekti/Kotlin/DailyLog23/app/src/main/res/layout/activity_add_goal.xml" value="0.22826086956521738" />
         <entry key="..\:/Fakultet/Fakultet/Projekti/Kotlin/DailyLog23/app/src/main/res/layout/activity_add_log.xml" value="0.22826086956521738" />
